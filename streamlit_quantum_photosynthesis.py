@@ -42,6 +42,10 @@ class PhotosynthesisIntegrator:
         # In a real scenario, this would involve complex biophysical calculations
         updated_params = type('obj', (object,), params.copy())()
 
+        # Add environmental conditions needed for rate calculations directly
+        # This ensures 'temperature' is available in updated_params
+        updated_params.temperature = conditions.temperature
+
         # Example: temperature affects barrier height or driving force
         # This is a highly simplified model
         updated_params.barrier_height *= (1 + (conditions.temperature - 298.15) * 0.001)
@@ -284,7 +288,7 @@ def main():
 
     temperature = st.sidebar.slider(
         "Temperature (°C)",
-        min_value=-5, max_value=50, value=25, step=1,
+_value=-5, max_value=50, value=25, step=1,
         help="Ambient temperature"
     )
 
