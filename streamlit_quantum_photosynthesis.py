@@ -1,7 +1,3 @@
-
-Streamlit App for Quantum Tunneling in Photosynthesis
-Run with: streamlit run streamlit_quantum_photosynthesis.py
-
 import streamlit as st
 import numpy as np
 import pandas as pd
