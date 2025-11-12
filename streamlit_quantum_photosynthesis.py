@@ -5,6 +5,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+# Placeholder for PhotosyntheticConditions and PhotosynthesisIntegrator
+# You will need to replace these with your actual implementations.
 class PhotosyntheticConditions:
     def __init__(self, light_intensity, wavelength, temperature, co2_concentration, water_availability, ph, chlorophyll_concentration):
         self.light_intensity = light_intensity
@@ -39,10 +41,6 @@ class PhotosynthesisIntegrator:
         # Simple placeholder for updating parameters based on conditions
         # In a real scenario, this would involve complex biophysical calculations
         updated_params = type('obj', (object,), params.copy())()
-
-        # Add environmental conditions needed for rate calculations directly
-        # This ensures 'temperature' is available in updated_params
-        updated_params.temperature = conditions.temperature
 
         # Example: temperature affects barrier height or driving force
         # This is a highly simplified model
@@ -286,7 +284,7 @@ def main():
 
     temperature = st.sidebar.slider(
         "Temperature (°C)",
-_value=-5, max_value=50, value=25, step=1,
+        min_value=-5, max_value=50, value=25, step=1,
         help="Ambient temperature"
     )
 
