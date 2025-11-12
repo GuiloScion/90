@@ -41,7 +41,7 @@ class PhotosynthesisIntegrator:
         # Simple placeholder for updating parameters based on conditions
         # In a real scenario, this would involve complex biophysical calculations
         updated_params = type('obj', (object,), params.copy())()
-        
+
         # Example: temperature affects barrier height or driving force
         # This is a highly simplified model
         updated_params.barrier_height *= (1 + (conditions.temperature - 298.15) * 0.001)
@@ -49,7 +49,7 @@ class PhotosynthesisIntegrator:
 
         # Light intensity could influence driving force
         updated_params.driving_force *= (1 + (conditions.light_intensity / 3000) * 0.1)
-        
+
         # CO2 could affect some pathways indirectly
         updated_params.driving_force *= (1 + (conditions.co2_concentration / 1000) * 0.05)
 
@@ -67,17 +67,17 @@ class PhotosynthesisIntegrator:
         # Using arbitrary constants for demonstration
         m = 9.11e-31  # mass of electron
         h_bar = 1.05e-34 # reduced Planck constant
-        
+
         # Convert eV to Joules for barrier_height and reorganization_energy if needed
         # For a simplified model, we'll keep them as relative units
-        
+
         # Prevent negative values from calculations
         effective_barrier_height = max(0.001, params.barrier_height - params.driving_force)
 
         # Using an arbitrary constant for the exponent part to avoid very small numbers
         # This is not a physically accurate WKB, but a demonstration of calculation structure
         exponent_factor = 2 * np.sqrt(2 * m / h_bar**2) * params.barrier_width * np.sqrt(effective_barrier_height * 1.602e-19) # * 1.602e-19 to convert eV to J
-        
+
         # Simplified tunneling probability, preventing overflow/underflow for demonstration
         try:
             prob = np.exp(-exponent_factor * 1e-10) # Scaling factor for demonstration
@@ -89,7 +89,7 @@ class PhotosynthesisIntegrator:
         # Placeholder: Simplified Marcus theory for electron transfer rate
         # k = (2*pi/h_bar) * V^2 * FCWD
         # FCWD = (1/sqrt(4*pi*lambda*kT)) * exp(-(deltaG0 + lambda)^2 / (4*lambda*kT))
-        
+
         # Assuming V (electronic coupling) is constant for simplicity
         V_squared = 1e-3 # Arbitrary value for V^2
         h_bar = 1.05e-34
@@ -104,7 +104,7 @@ class PhotosynthesisIntegrator:
             return 1e-30 # Return a very small rate for invalid conditions
 
         exponent_term = (deltaG0_J + lambda_J)**2 / (4 * lambda_J * k_b * temperature)
-        
+
         # Ensure the exponent term doesn't lead to overflow/underflow
         if exponent_term > 700: # Approximate value for exp(-x) to become zero
             FCWD = 0.0
@@ -136,7 +136,7 @@ class PhotosynthesisIntegrator:
             for reaction_name, initial_params in reactions.items():
                 updated_params = self._update_params_for_conditions(initial_params, conditions)
                 tunneling_rate = self.marcus_tunneling_rate(updated_params)
-                
+
                 complex_rates[reaction_name] = tunneling_rate
 
                 # Simple efficiency estimation based on tunneling rate
@@ -148,7 +148,7 @@ class PhotosynthesisIntegrator:
                 complex_efficiency /= num_reactions # Average efficiency for the complex
             else:
                 complex_efficiency = 0
-            
+
             results['quantum_efficiencies'][complex_name] = complex_efficiency
             results['tunneling_rates'][complex_name] = complex_rates
             total_efficiency += complex_efficiency
@@ -184,10 +184,10 @@ class PhotosynthesisIntegrator:
 
             # Dynamically set the parameter value
             setattr(temp_conditions, param_to_sweep, value)
-            
+
             result = self.simulate_photosynthetic_pathway(temp_conditions)
             efficiencies.append(result['overall_efficiency'])
-            
+
             avg_rate = np.mean([np.mean(list(rates.values())) for rates in result['tunneling_rates'].values()])
             tunneling_effects.append(avg_rate)
 
@@ -232,13 +232,13 @@ Quantum Efficiencies by Complex:
         results = self.simulate_photosynthetic_pathway(conditions)
         for complex_name, eff in results['quantum_efficiencies'].items():
             report += f"- {complex_name.replace('_', ' ').title()}: {eff:.4f}\n"
-        
+
         report += "\nTunneling Rates (log10 s⁻¹) by Complex and Reaction:\n----------------------------------------------------\n"
-        for complex_name, reactions in results['tunneling_rates'].items():
+        for complex_name, reactions_dict in results['tunneling_rates'].items(): # Renamed 'reactions' to 'reactions_dict'
             report += f"Complex: {complex_name.replace('_', ' ').title()}\n"
-            for reaction_name, rate in reactions.items():
+            for reaction_name, rate in reactions_dict.items():
                 report += f"  - {reaction_name.replace('_', ' → ')}: {np.log10(rate):.2f}\n"
-        
+
         report += """
 
 Notes:
@@ -397,8 +397,9 @@ def main():
         st.subheader("Quantum Tunneling Rates")
 
         tunneling_data = []
-        for complex_name, reactions in results['tunneling_rates'].items():
-            for reaction, rate in reactions.append({
+        for complex_name, reactions_dict in results['tunneling_rates'].items(): # Corrected: 'reactions_dict' to iterate through dictionary
+            for reaction, rate in reactions_dict.items(): # Corrected: iterate over .items()
+                tunneling_data.append({
                     "Complex": complex_name.replace('_', ' ').title(),
                     "Reaction": reaction.replace('_', ' → '),
                     "Rate (log₁₀ s⁻¹)": np.log10(rate)
