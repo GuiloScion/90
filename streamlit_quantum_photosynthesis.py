@@ -398,8 +398,7 @@ def main():
 
         tunneling_data = []
         for complex_name, reactions in results['tunneling_rates'].items():
-            for reaction, rate in reactions.items():
-                tunneling_data.append({
+            for reaction, rate in reactions.append({
                     "Complex": complex_name.replace('_', ' ').title(),
                     "Reaction": reaction.replace('_', ' → '),
                     "Rate (log₁₀ s⁻¹)": np.log10(rate)
