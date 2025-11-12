@@ -5,8 +5,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Placeholder for PhotosyntheticConditions and PhotosynthesisIntegrator
-# You will need to replace these with your actual implementations.
 class PhotosyntheticConditions:
     def __init__(self, light_intensity, wavelength, temperature, co2_concentration, water_availability, ph, chlorophyll_concentration):
         self.light_intensity = light_intensity
