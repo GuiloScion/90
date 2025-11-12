@@ -24,12 +24,6 @@ def main():
     Adjust parameters in the sidebar and see real-time results!
     """)
     
-    # Initialize the integrator
-    if 'integrator' not in st.session_state:
-        st.session_state.integrator = QuantumPhotosynthesisIntegrator()
-    
-    integrator = st.session_state.integrator
-    
     # Sidebar for parameter controls
     st.sidebar.header("Environmental Parameters")
     
